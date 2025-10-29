@@ -46,6 +46,33 @@ $bagels = [
         ],
     ],
 ];
+
+$experience = [
+    [
+        'eyebrow' => 'Ingrédients d\'exception',
+        'title' => 'Récolte à l\'aube',
+        'copy' => 'Nos artisans sélectionnent chaque herbe, légume et poisson avant le lever du soleil pour garantir une fraîcheur absolue.',
+        'color' => '#f6b24b',
+    ],
+    [
+        'eyebrow' => 'Cuisine chorégraphiée',
+        'title' => 'Gestuelle millimétrée',
+        'copy' => 'Chaque couche est déposée avec un rituel précis : nappage soyeux, tranche lustrée, herbes ciselées au millimètre.',
+        'color' => '#9d9bff',
+    ],
+    [
+        'eyebrow' => 'Toastage minute',
+        'title' => 'Chaleur maîtrisée',
+        'copy' => 'Nous toastons nos bagels à la commande pour révéler un croustillant doré et un cœur moelleux.',
+        'color' => '#68c8b7',
+    ],
+    [
+        'eyebrow' => 'Personnalisation immersive',
+        'title' => 'Votre signature',
+        'copy' => 'Un clic suffit pour révéler chaque couche et désactiver un ingrédient. Votre MayMiru devient unique.',
+        'color' => '#f6a5c0',
+    ],
+];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -53,94 +80,133 @@ $bagels = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MayMiru — Bagels immersifs</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Work+Sans:wght@300;400;500;600&display=swap">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="assets/styles.css">
 </head>
-<body>
-    <header class="hero">
-        <div class="hero__overlay"></div>
-        <div class="hero__content">
-            <h1>MayMiru</h1>
-            <p>Bagels immersifs, créations sensorielles.</p>
-            <a class="hero__cta" href="#menu">Explorer le menu</a>
-        </div>
-        <div class="hero__scroll" aria-hidden="true">
-            <span>Défiler</span>
-            <div class="hero__scroll-indicator"></div>
+<body class="theme--dark">
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a class="site-header__logo" href="#top">MayMiru</a>
+            <nav class="site-nav" aria-label="Navigation principale">
+                <a href="#experience">Expérience</a>
+                <a href="#atelier">Atelier</a>
+                <a href="#menu">Menu</a>
+                <a class="site-nav__cta" href="tel:+15145551234">Réserver</a>
+            </nav>
         </div>
     </header>
 
-    <main>
-        <section class="immersive-scroll" id="experience">
-            <div class="immersive-scroll__container">
-                <div class="immersive-scroll__sticky">
-                    <div class="immersive-scroll__device" data-immersive-device>
-                        <div class="immersive-scroll__orb" data-orb></div>
-                        <div class="immersive-scroll__caption">
-                            <p class="immersive-scroll__eyebrow">Immersion MayMiru</p>
-                            <h2 data-scroll-title>Un rituel sensoriel</h2>
-                            <p data-scroll-description>
-                                Nos bagels se dévoilent couche après couche pendant que vous défilez, comme si vous étiez dans notre atelier.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="immersive-scroll__progress">
-                        <div class="immersive-scroll__progress-track">
-                            <div class="immersive-scroll__progress-fill" data-progress></div>
-                        </div>
-                        <span class="immersive-scroll__progress-label">Faites défiler pour découvrir</span>
+    <main id="top">
+        <section class="panel panel--hero" data-theme="dark">
+            <div class="hero">
+                <div class="hero__copy">
+                    <p class="hero__eyebrow">Bagels immersifs</p>
+                    <h1>MayMiru</h1>
+                    <p class="hero__lead">Une expérience sensorielle orchestrée comme un lancement produit. Chaque bagel se révèle couche après couche avec une précision Apple-like.</p>
+                    <div class="hero__cta">
+                        <a class="button" href="#experience">Découvrir l'expérience</a>
+                        <a class="button button--ghost" href="#menu">Personnaliser un bagel</a>
                     </div>
                 </div>
-                <div class="immersive-scroll__steps">
-                    <article class="immersive-step is-active" data-color="#ff8c42" data-title="Ingrédients triés sur le volet" data-description="Chaque bagel commence par des produits du marché sélectionnés à l'aube, sourcés localement et tracés.">
-                        <div class="immersive-step__inner">
-                            <h3>Récolte à l'aube</h3>
-                            <p>Nos artisans parcourent les producteurs locaux pour cueillir les herbes fraîches, légumes croquants et poissons durables.</p>
+                <div class="hero__visual">
+                    <div class="hero__orb">
+                        <span>MayMiru</span>
+                    </div>
+                </div>
+                <div class="hero__scroll-cue" aria-hidden="true">
+                    <span>Faites défiler</span>
+                    <div class="hero__scroll-line"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel panel--showcase" id="experience" data-theme="light">
+            <div class="showcase">
+                <div class="showcase__sticky">
+                    <div class="showcase__frame" data-showcase>
+                        <div class="showcase__halo"></div>
+                        <div class="showcase__bagel" data-showcase-bagel>
+                            <?php foreach (range(1, 6) as $index): ?>
+                                <span class="showcase__slice" aria-hidden="true"></span>
+                            <?php endforeach; ?>
                         </div>
+                        <div class="showcase__caption">
+                            <p data-showcase-eyebrow>Ingrédients d'exception</p>
+                            <h2 data-showcase-title>Récolte à l'aube</h2>
+                            <p data-showcase-copy>Nos artisans sélectionnent chaque herbe, légume et poisson avant le lever du soleil pour garantir une fraîcheur absolue.</p>
+                        </div>
+                    </div>
+                    <div class="showcase__progress" aria-hidden="true">
+                        <span data-showcase-index>01</span>
+                        <div class="showcase__progress-bar">
+                            <span data-showcase-progress></span>
+                        </div>
+                        <span><?= str_pad(count($experience), 2, '0', STR_PAD_LEFT) ?></span>
+                    </div>
+                </div>
+                <div class="showcase__steps">
+                    <?php foreach ($experience as $step): ?>
+                        <article class="showcase-step" data-color="<?= htmlspecialchars($step['color']) ?>" data-eyebrow="<?= htmlspecialchars($step['eyebrow']) ?>" data-title="<?= htmlspecialchars($step['title']) ?>" data-copy="<?= htmlspecialchars($step['copy']) ?>">
+                            <div class="showcase-step__inner">
+                                <p class="showcase-step__eyebrow"><?= htmlspecialchars($step['eyebrow']) ?></p>
+                                <h3><?= htmlspecialchars($step['title']) ?></h3>
+                                <p><?= htmlspecialchars($step['copy']) ?></p>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel panel--atelier" id="atelier" data-theme="dark">
+            <div class="atelier">
+                <div class="atelier__headline">
+                    <p class="atelier__eyebrow">Inside MayMiru</p>
+                    <h2>Un atelier comme un laboratoire d'innovation culinaire.</h2>
+                </div>
+                <div class="atelier__grid">
+                    <article>
+                        <h3>Studio sensoriel</h3>
+                        <p>Textures, parfums, sons : chaque détail est prototypé pour que l'ouverture de votre bagel évoque une keynote.</p>
                     </article>
-                    <article class="immersive-step" data-color="#7d9bff" data-title="Assemblage chorégraphié" data-description="Chaque couche est déposée avec précision afin de composer un contraste textures-saveurs signature MayMiru.">
-                        <div class="immersive-step__inner">
-                            <h3>Gestuelle millimétrée</h3>
-                            <p>Les ingrédients se superposent en cadence : sauce délicatement nappée, tranche lustrée, herbes ciselées.</p>
-                        </div>
+                    <article>
+                        <h3>Technologie artisanale</h3>
+                        <p>Nos outils sur-mesure calibrent l'épaisseur des tranches et la température pour assurer une constance digne d'un produit phare.</p>
                     </article>
-                    <article class="immersive-step" data-color="#78c2ad" data-title="Cuisson minute" data-description="Les pains bagels sont toastés à la commande pour libérer un nuage d'arômes dorés et assurer une mâche idéale.">
-                        <div class="immersive-step__inner">
-                            <h3>Le four crépitant</h3>
-                            <p>Nous réveillons le bagel juste avant le service : croustillant à l'extérieur, moelleux au cœur.</p>
-                        </div>
-                    </article>
-                    <article class="immersive-step" data-color="#f6a5c0" data-title="Service immersif" data-description="Votre bagel est présenté avec ses couches révélées, prêt à être personnalisé depuis votre écran ou au comptoir.">
-                        <div class="immersive-step__inner">
-                            <h3>Rituel de présentation</h3>
-                            <p>Au moment du service, chaque couche s'illumine et vous pouvez retirer un ingrédient d'un simple geste.</p>
-                        </div>
+                    <article>
+                        <h3>Service chorégraphié</h3>
+                        <p>Les couches se révèlent en projection holographique sur place ou sur votre écran. Vous contrôlez chaque ingrédient.</p>
                     </article>
                 </div>
             </div>
         </section>
 
-        <section class="section section--dark" id="menu">
-            <div class="section__intro">
-                <h2>Menu signature</h2>
-                <p>Sélectionnez un bagel pour le décortiquer virtuellement et personnaliser votre dégustation.</p>
-            </div>
-            <div class="menu-grid">
-                <?php foreach ($bagels as $bagel): ?>
-                    <?php $data = htmlspecialchars(json_encode($bagel, JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT)); ?>
-                    <article class="bagel-card" data-bagel="<?= $data ?>">
-                        <div class="bagel-card__glow"></div>
-                        <h3><?= htmlspecialchars($bagel['name']) ?></h3>
-                        <p><?= htmlspecialchars($bagel['description']) ?></p>
-                        <span class="bagel-card__cta">Découvrir</span>
-                    </article>
-                <?php endforeach; ?>
+        <section class="panel panel--menu" id="menu" data-theme="light">
+            <div class="menu">
+                <header class="menu__header">
+                    <p class="menu__eyebrow">Collection signature</p>
+                    <h2>Sélectionnez un bagel pour le décortiquer couche par couche.</h2>
+                </header>
+                <div class="menu__grid">
+                    <?php foreach ($bagels as $bagel): ?>
+                        <?php $data = htmlspecialchars(json_encode($bagel, JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT)); ?>
+                        <article class="menu-card" data-bagel="<?= $data ?>">
+                            <div class="menu-card__content">
+                                <h3><?= htmlspecialchars($bagel['name']) ?></h3>
+                                <p><?= htmlspecialchars($bagel['description']) ?></p>
+                                <span class="menu-card__cta">Voir les couches</span>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </section>
     </main>
 
     <section class="viewer" id="bagel-viewer" aria-hidden="true">
-        <div class="viewer__background"></div>
+        <div class="viewer__backdrop"></div>
         <div class="viewer__panel" role="dialog" aria-modal="true" aria-labelledby="viewer-title">
             <button class="viewer__close" aria-label="Fermer">&times;</button>
             <div class="viewer__layout">
@@ -156,11 +222,13 @@ $bagels = [
         </div>
     </section>
 
-    <footer class="footer">
-        <div class="footer__content">
-            <h2>MayMiru</h2>
-            <p>Ouvert tous les jours — 7h à 19h — 24 rue des Saveurs, Montréal</p>
-            <p class="footer__note">Réservation au <a href="tel:+15145551234">+1 514 555 1234</a> • Suivez-nous @maymiru.bagels</p>
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div>
+                <p class="site-footer__brand">MayMiru</p>
+                <p>Ouvert tous les jours · 7h — 19h · 24 rue des Saveurs, Montréal</p>
+            </div>
+            <p class="site-footer__note">Réservation au <a href="tel:+15145551234">+1 514 555 1234</a> · Suivez-nous @maymiru.bagels</p>
         </div>
     </footer>
 

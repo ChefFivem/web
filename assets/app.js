@@ -20,6 +20,27 @@ function closeViewer() {
     document.body.style.overflow = '';
 }
 
+function shadeColor(color, percent) {
+    if (!color || !/^#([a-fA-F0-9]{6})$/.test(color)) return color;
+    const num = parseInt(color.slice(1), 16);
+    let r = (num >> 16) + Math.round((percent / 100) * 255);
+    let g = ((num >> 8) & 0x00ff) + Math.round((percent / 100) * 255);
+    let b = (num & 0x0000ff) + Math.round((percent / 100) * 255);
+    r = Math.min(255, Math.max(0, r));
+    g = Math.min(255, Math.max(0, g));
+    b = Math.min(255, Math.max(0, b));
+    return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
+}
+
+function hexToRgba(color, alpha = 1) {
+    if (!color || !/^#([a-fA-F0-9]{6})$/.test(color)) return `rgba(255, 140, 66, ${alpha})`;
+    const value = color.replace('#', '');
+    const r = parseInt(value.substring(0, 2), 16);
+    const g = parseInt(value.substring(2, 4), 16);
+    const b = parseInt(value.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 function renderBagel(bagel) {
     activeBagel = bagel;
     viewerTitle.textContent = bagel.name;
@@ -28,14 +49,18 @@ function renderBagel(bagel) {
     layerList.innerHTML = '';
 
     const totalLayers = bagel.layers.length;
+    const midpoint = (totalLayers - 1) / 2;
 
     bagel.layers.forEach((layer, index) => {
         const layerElement = document.createElement('div');
         layerElement.className = 'bagel-layer';
         layerElement.dataset.layerIndex = index;
-        layerElement.style.setProperty('--layer-count', totalLayers);
-        layerElement.style.setProperty('--layer-index', index);
-        layerElement.style.background = `linear-gradient(120deg, ${layer.color}, ${shadeColor(layer.color, -12)})`;
+        const depth = Math.abs(index - midpoint);
+        const translateY = (index - midpoint) * 38;
+        const scale = 1 - depth * 0.04;
+        layerElement.style.transform = `translateY(${translateY}px) scale(${scale})`;
+        layerElement.style.background = `linear-gradient(135deg, ${shadeColor(layer.color, 12)}, ${shadeColor(layer.color, -10)})`;
+        layerElement.style.boxShadow = `0 ${20 + depth * 12}px ${50 + depth * 18}px ${hexToRgba(layer.color, 0.35)}`;
         layerElement.textContent = layer.title;
         layerStack.appendChild(layerElement);
 
@@ -78,78 +103,46 @@ function announceCustomisation() {
     viewer.setAttribute('data-active-layers', formatter.format(activeLayers));
 }
 
-function shadeColor(color, percent) {
-    let r = parseInt(color.slice(1, 3), 16);
-    let g = parseInt(color.slice(3, 5), 16);
-    let b = parseInt(color.slice(5, 7), 16);
+function initShowcase() {
+    const showcase = document.querySelector('[data-showcase]');
+    if (!showcase) return;
 
-    r = Math.min(255, Math.max(0, r + Math.round((percent / 100) * 255)));
-    g = Math.min(255, Math.max(0, g + Math.round((percent / 100) * 255)));
-    b = Math.min(255, Math.max(0, b + Math.round((percent / 100) * 255)));
+    const eyebrow = showcase.querySelector('[data-showcase-eyebrow]');
+    const title = showcase.querySelector('[data-showcase-title]');
+    const copy = showcase.querySelector('[data-showcase-copy]');
+    const bagel = showcase.querySelector('[data-showcase-bagel]');
+    const halo = showcase.querySelector('.showcase__halo');
+    const slices = bagel ? Array.from(bagel.querySelectorAll('.showcase__slice')) : [];
+    const indexLabel = document.querySelector('[data-showcase-index]');
+    const progress = document.querySelector('[data-showcase-progress]');
+    const steps = Array.from(document.querySelectorAll('.showcase-step'));
 
-    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-}
-
-function hexToRgba(color, alpha = 1) {
-    if (!color || !color.startsWith('#')) return `rgba(255, 140, 66, ${alpha})`;
-    const value = color.replace('#', '');
-    const r = parseInt(value.substring(0, 2), 16);
-    const g = parseInt(value.substring(2, 4), 16);
-    const b = parseInt(value.substring(4, 6), 16);
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
-
-function initImmersiveScroll() {
-    const immersiveSection = document.querySelector('.immersive-scroll');
-    if (!immersiveSection) return;
-
-    const steps = Array.from(immersiveSection.querySelectorAll('.immersive-step'));
     if (!steps.length) return;
 
-    const orb = immersiveSection.querySelector('[data-orb]');
-    const title = immersiveSection.querySelector('[data-scroll-title]');
-    const description = immersiveSection.querySelector('[data-scroll-description]');
-    const progress = immersiveSection.querySelector('[data-progress]');
-    const device = immersiveSection.querySelector('[data-immersive-device]');
+    const activateStep = (step, index) => {
+        steps.forEach((candidate) => candidate.classList.toggle('is-active', candidate === step));
+        const color = step.dataset.color || '#ff8c42';
+        if (eyebrow) eyebrow.textContent = step.dataset.eyebrow || '';
+        if (title) title.textContent = step.dataset.title || '';
+        if (copy) copy.textContent = step.dataset.copy || '';
+        if (indexLabel) indexLabel.textContent = (index + 1).toString().padStart(2, '0');
+        if (progress) progress.style.transform = `scaleX(${(index + 1) / steps.length})`;
 
-    const activateStep = (step) => {
-        steps.forEach((candidate, index) => {
-            const isActive = candidate === step;
-            candidate.classList.toggle('is-active', isActive);
-            if (isActive) {
-                const highlight = candidate.dataset.color || '#ff8c42';
-                if (orb) {
-                    orb.style.background = `radial-gradient(circle at 25% 25%, ${highlight}, rgba(12, 15, 22, 0.9) 70%)`;
-                    orb.style.boxShadow = `0 40px 120px ${hexToRgba(highlight, 0.45)}, inset 0 0 60px rgba(255, 255, 255, 0.08)`;
-                    if (!prefersReducedMotion.matches) {
-                        orb.style.setProperty('--orb-scale', '1.05');
-                        requestAnimationFrame(() => {
-                            orb.style.setProperty('--orb-scale', '1');
-                        });
-                    }
-                }
+        if (showcase) {
+            showcase.style.setProperty('--showcase-color', color);
+            showcase.style.background = `linear-gradient(135deg, ${shadeColor(color, 20)} 0%, ${shadeColor(color, -20)} 100%)`;
+        }
 
-                if (title && candidate.dataset.title) {
-                    title.textContent = candidate.dataset.title;
-                }
-                if (description && candidate.dataset.description) {
-                    description.textContent = candidate.dataset.description;
-                }
-                if (progress) {
-                    const value = (index + 1) / steps.length;
-                    progress.style.transform = `scaleX(${value})`;
-                }
-                if (device) {
-                    device.style.setProperty('--active-color', highlight);
-                    device.style.setProperty('--device-highlight', hexToRgba(highlight, 0.28));
-                    if (!prefersReducedMotion.matches) {
-                        device.style.setProperty('--device-translate', '-6px');
-                        requestAnimationFrame(() => {
-                            device.style.setProperty('--device-translate', '0px');
-                        });
-                    }
-                }
-            }
+        if (halo && !prefersReducedMotion.matches) {
+            halo.style.transform = `scale(${1 + index * 0.05}) rotate(${index * 6}deg)`;
+            halo.style.opacity = 0.5 + index * 0.08;
+        }
+
+        slices.forEach((slice, sliceIndex) => {
+            const depth = Math.abs(sliceIndex - (slices.length - 1) / 2);
+            slice.style.background = `linear-gradient(120deg, ${shadeColor(color, 18 - depth * 4)}, ${shadeColor(color, -12 - depth * 4)})`;
+            slice.style.boxShadow = `0 ${18 + depth * 12}px ${60 + depth * 18}px ${hexToRgba(color, 0.35)}`;
+            slice.style.opacity = 0.35 + (1 - depth / slices.length) * 0.45;
         });
     };
 
@@ -159,57 +152,44 @@ function initImmersiveScroll() {
                 .filter((entry) => entry.isIntersecting)
                 .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
             if (visible.length) {
-                activateStep(visible[0].target);
+                const step = visible[0].target;
+                const index = steps.indexOf(step);
+                if (index >= 0) activateStep(step, index);
             }
         },
         {
-            threshold: prefersReducedMotion.matches ? 0.25 : [0.3, 0.6, 0.9],
-            rootMargin: '0px 0px -20% 0px',
+            threshold: prefersReducedMotion.matches ? 0.2 : [0.3, 0.6, 0.9],
+            rootMargin: '-10% 0px -40% 0px',
         }
     );
 
     steps.forEach((step) => observer.observe(step));
+    activateStep(steps[0], 0);
+}
 
-    activateStep(steps[0]);
+function initThemeObserver() {
+    const sections = document.querySelectorAll('.panel[data-theme]');
+    if (!sections.length) return;
+    const body = document.body;
 
-    const parallax = () => {
-        if (prefersReducedMotion.matches) return;
-        const rect = immersiveSection.getBoundingClientRect();
-        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-        const progressValue = Math.min(1, Math.max(0, (viewportHeight - rect.top) / (rect.height + viewportHeight)));
-        const translate = (0.5 - progressValue) * 90;
-        if (orb) {
-            orb.style.setProperty('--orb-translate', `${translate}px`);
-            orb.style.setProperty('--orb-scale', `${1 + progressValue * 0.08}`);
+    const observer = new IntersectionObserver(
+        (entries) => {
+            const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+            if (!visible.length) return;
+            const theme = visible[0].target.dataset.theme;
+            body.classList.toggle('theme--light', theme === 'light');
+            body.classList.toggle('theme--dark', theme === 'dark');
+        },
+        {
+            threshold: 0.5,
         }
-        if (device) {
-            device.style.setProperty('--device-translate', `${translate * -0.15}px`);
-        }
-    };
+    );
 
-    parallax();
-    window.addEventListener('scroll', parallax, { passive: true });
-    window.addEventListener('resize', parallax);
-
-    if (typeof prefersReducedMotion.addEventListener === 'function') {
-        prefersReducedMotion.addEventListener('change', () => {
-            if (prefersReducedMotion.matches) {
-                if (orb) {
-                    orb.style.removeProperty('--orb-translate');
-                    orb.style.removeProperty('--orb-scale');
-                }
-                if (device) {
-                    device.style.removeProperty('--device-translate');
-                }
-            } else {
-                parallax();
-            }
-        });
-    }
+    sections.forEach((section) => observer.observe(section));
 }
 
 function init() {
-    const cards = document.querySelectorAll('.bagel-card');
+    const cards = document.querySelectorAll('.menu-card');
     cards.forEach((card) => {
         card.addEventListener('click', () => {
             const data = card.dataset.bagel;
@@ -229,7 +209,7 @@ function init() {
 
     closeBtn.addEventListener('click', closeViewer);
     viewer.addEventListener('click', (event) => {
-        if (event.target === viewer || event.target.classList.contains('viewer__background')) {
+        if (event.target === viewer || event.target.classList.contains('viewer__backdrop')) {
             closeViewer();
         }
     });
@@ -240,7 +220,8 @@ function init() {
         }
     });
 
-    initImmersiveScroll();
+    initShowcase();
+    initThemeObserver();
 }
 
 document.addEventListener('DOMContentLoaded', init);
