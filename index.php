@@ -64,16 +64,59 @@ $bagels = [
             <p>Bagels immersifs, créations sensorielles.</p>
             <a class="hero__cta" href="#menu">Explorer le menu</a>
         </div>
+        <div class="hero__scroll" aria-hidden="true">
+            <span>Défiler</span>
+            <div class="hero__scroll-indicator"></div>
+        </div>
     </header>
 
     <main>
-        <section class="section" id="experience">
-            <div class="section__intro">
-                <h2>Une expérience immersive</h2>
-                <p>
-                    Chez MayMiru, chaque bagel est une histoire racontée couche après couche. Explorez nos créations,
-                    désactivez un ingrédient, contemplez comment les saveurs s'équilibrent — le tout dans un univers visuel riche.
-                </p>
+        <section class="immersive-scroll" id="experience">
+            <div class="immersive-scroll__container">
+                <div class="immersive-scroll__sticky">
+                    <div class="immersive-scroll__device" data-immersive-device>
+                        <div class="immersive-scroll__orb" data-orb></div>
+                        <div class="immersive-scroll__caption">
+                            <p class="immersive-scroll__eyebrow">Immersion MayMiru</p>
+                            <h2 data-scroll-title>Un rituel sensoriel</h2>
+                            <p data-scroll-description>
+                                Nos bagels se dévoilent couche après couche pendant que vous défilez, comme si vous étiez dans notre atelier.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="immersive-scroll__progress">
+                        <div class="immersive-scroll__progress-track">
+                            <div class="immersive-scroll__progress-fill" data-progress></div>
+                        </div>
+                        <span class="immersive-scroll__progress-label">Faites défiler pour découvrir</span>
+                    </div>
+                </div>
+                <div class="immersive-scroll__steps">
+                    <article class="immersive-step is-active" data-color="#ff8c42" data-title="Ingrédients triés sur le volet" data-description="Chaque bagel commence par des produits du marché sélectionnés à l'aube, sourcés localement et tracés.">
+                        <div class="immersive-step__inner">
+                            <h3>Récolte à l'aube</h3>
+                            <p>Nos artisans parcourent les producteurs locaux pour cueillir les herbes fraîches, légumes croquants et poissons durables.</p>
+                        </div>
+                    </article>
+                    <article class="immersive-step" data-color="#7d9bff" data-title="Assemblage chorégraphié" data-description="Chaque couche est déposée avec précision afin de composer un contraste textures-saveurs signature MayMiru.">
+                        <div class="immersive-step__inner">
+                            <h3>Gestuelle millimétrée</h3>
+                            <p>Les ingrédients se superposent en cadence : sauce délicatement nappée, tranche lustrée, herbes ciselées.</p>
+                        </div>
+                    </article>
+                    <article class="immersive-step" data-color="#78c2ad" data-title="Cuisson minute" data-description="Les pains bagels sont toastés à la commande pour libérer un nuage d'arômes dorés et assurer une mâche idéale.">
+                        <div class="immersive-step__inner">
+                            <h3>Le four crépitant</h3>
+                            <p>Nous réveillons le bagel juste avant le service : croustillant à l'extérieur, moelleux au cœur.</p>
+                        </div>
+                    </article>
+                    <article class="immersive-step" data-color="#f6a5c0" data-title="Service immersif" data-description="Votre bagel est présenté avec ses couches révélées, prêt à être personnalisé depuis votre écran ou au comptoir.">
+                        <div class="immersive-step__inner">
+                            <h3>Rituel de présentation</h3>
+                            <p>Au moment du service, chaque couche s'illumine et vous pouvez retirer un ingrédient d'un simple geste.</p>
+                        </div>
+                    </article>
+                </div>
             </div>
         </section>
 
